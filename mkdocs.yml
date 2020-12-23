@@ -1,0 +1,14 @@
+site_name: Slime
+pages:
+- '简介': 'index.md'
+- '快速开始': 
+  - '配置懒加载': "getting_started/lazyload.md"
+  - 'HTTP插件管理': "getting_started/plugin.md"
+  - '自适应限流': "getting_started/ratelimit.md"
+- '原理和概念':
+  - '配置懒加载': "concept/lazyload.md"
+  - 'HTTP插件管理': "concept/plugin.md"
+  - '自适应限流': "concept/ratelimit.md"
+- '接口参考': "reference.md"  
+theme: 
+  name: mkdocs

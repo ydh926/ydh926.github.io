@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>HTTP插件管理 - Slime</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "HTTP\u63d2\u4ef6\u7ba1\u7406";
+    var mkdocs_page_input_path = "getting_started\\plugin.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Slime</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">快速开始</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../lazyload/">配置懒加载</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">HTTP插件管理</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">内建插件</a></li>
+    
+
+    <li class="toctree-l3"><a href="#wasm">扩展wasm插件</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">示例</a></li>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ratelimit/">自适应限流</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">原理和概念</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../concept/lazyload/">配置懒加载</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../concept/plugin/">HTTP插件管理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../concept/ratelimit/">自适应限流</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../reference/">接口参考</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Slime</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>快速开始 &raquo;</li>
+        
+      
+    
+    <li>HTTP插件管理</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>使用Slime的Http插件管理功能需在ConfigMap中开启Plugin模块：</p>
+<pre><code class="json">{
+  &quot;plugin&quot;: {
+    &quot;enable&quot;: true
+  }
+  //...
+}
+</code></pre>
+
+<h3 id="_1">内建插件</h3>
+<p><strong>注意:</strong> envoy的二进制需支持扩展插件</p>
+<p><strong>打开/停用</strong>   </p>
+<p>按如下格式配置PluginManager，即可打开内建插件:</p>
+<pre><code class="yaml">apiVersion: microservice.netease.com/v1alpha1
+kind: PluginManager
+metadata:
+  name: my-plugin
+  namespace: default
+spec:
+  workload_labels:
+    app: my-app
+  plugins:
+  - enable: true          # 插件开关
+    name: {plugin-1}
+  # ...
+  - enable: true
+    name: {plugin-N}
+</code></pre>
+
+<p>其中，{plugin-N}为插件名称，PluginManager中的排序为插件执行顺序。
+将enable字段设置为false即可停用插件。</p>
+<p><strong>全局配置</strong></p>
+<p>全局配置对应LDS中的插件配置，按如下格式设置全局配置:</p>
+<pre><code class="yaml">apiVersion: microservice.netease.com/v1alpha1
+kind: PluginManager
+metadata:
+  name: my-plugin
+  namespace: default
+spec:
+  workload_labels:
+    app: my-app
+  plugins:
+  - enable: true          # 插件开关
+    name: {plugin-1}      # 插件名称
+    inline:
+      settings:
+        {plugin settings} # 插件配置
+  # ...
+  - enable: true
+    name: {plugin-N}
+</code></pre>
+
+<p><strong>Host/路由级别配置</strong></p>
+<p>按如下格式配置EnvoyPlugin:</p>
+<pre><code class="yaml">apiVersion: microservice.netease.com/v1alpha1
+kind: EnvoyPlugin
+metadata:
+  name: project1-abc
+  namespace: gateway-system
+spec:
+  workload_labels:
+    app: my-app
+  host:                          # 插件的生效范围(host级别)              
+  - jmeter.com
+  - istio.com
+  - 989.mock.qa.netease.com
+  - demo.test.com
+  - netease.com
+  route:                         # 插件的生效范围(route级别), route字段须对应VirtualService中的名称
+  - abc
+  plugins:
+  - name: com.netease.supercache # 插件名称
+    settings:                    # 插件配置
+      cache_ttls:
+        LocalHttpCache:
+          default: 60000
+      enable_rpx:
+        headers:
+        - name: :status
+          regex_match: 200|
+      key_maker:
+        exclude_host: false
+        ignore_case: true
+      low_level_fill: true
+</code></pre>
+
+<h3 id="wasm">扩展wasm插件</h3>
+<p>// TODO</p>
+<h3 id="_2">示例</h3>
+<p>// TODO</p>
+<hr />
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../ratelimit/" class="btn btn-neutral float-right" title="自适应限流">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../lazyload/" class="btn btn-neutral" title="配置懒加载"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../lazyload/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../ratelimit/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
